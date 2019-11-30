@@ -46,7 +46,7 @@ local actions = {
 		Const.ID.ActionRemoveAll,
 		Lion.Action_RemoveAll_Text(),
 		Lion.Action_RemoveAll_StatusTip(),
-		Assets.RemoveAllLight(16),
+		Assets.RemoveAll(16, "Light"),
 		true
 	),
 }
@@ -211,11 +211,11 @@ do
 	buttons.changelog = buttonTmpl:Clone()
 	buttons.changelog.Name = "ChangelogButton"
 	buttons.changelog.Position = UDim2.new(1,-SIZE*2-PAD*2,0,PAD)
-	buttons.changelog.Icon.Image = Assets.ChangelogLight(32)
+	buttons.changelog.Icon.Image = Assets.Changelog(32, "Light")
 	buttons.changelog.Parent = rootContainer
 	table.insert(elements, {type="button",body=buttons.changelog,icon={
-		Light = Assets.ChangelogLight(32),
-		Dark = Assets.ChangelogDark(32),
+		Light = Assets.Changelog(32, "Light"),
+		Dark = Assets.Changelog(32, "Dark"),
 	}})
 
 	buttons.help = buttonTmpl:Clone()
@@ -239,15 +239,15 @@ do
 	buttons.removeAll = buttonTmpl:Clone()
 	buttons.removeAll.Name = "RemoveAllButton"
 	buttons.removeAll.Position = UDim2.new(1,-SIZE-PAD-SCROLL,1,-SIZE-PAD)
-	buttons.removeAll.Icon.Image = Assets.RemoveAllLight(32)
+	buttons.removeAll.Icon.Image = Assets.RemoveAll(32, "Light")
 	if HotSwap:Active() then
 		buttons.removeAll.Icon.ImageTransparency = 0.8
 		buttons.removeAll.AutoButtonColor = false
 	end
 	buttons.removeAll.Parent = rootContainer
 	table.insert(elements, {type="button",body=buttons.removeAll,icon={
-		Light = Assets.RemoveAllLight(32),
-		Dark = Assets.RemoveAllDark(32),
+		Light = Assets.RemoveAll(32, "Light"),
+		Dark = Assets.RemoveAll(32, "Dark"),
 	}})
 end
 
@@ -364,11 +364,13 @@ function Widget:Init()
 	panel:GetPropertyChangedSignal("Enabled"):Connect(updateVisible)
 	updateVisible()
 
+	local enabledIcon = Assets.Enabled(32)
+	local disabledIcon = Assets.Disabled(32)
 	local function updateEnabled(enabled)
 		if enabled then
-			buttons.enable.Icon.Image = Assets.Enabled(32)
+			buttons.enable.Icon.Image = enabledIcon
 		else
-			buttons.enable.Icon.Image = Assets.Disabled(32)
+			buttons.enable.Icon.Image = disabledIcon
 		end
 	end
 	HotSwap.EnabledChanged:Connect(updateEnabled)

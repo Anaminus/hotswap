@@ -1,9 +1,12 @@
 local assets = require(script.data)
 
+local keyFields = {"id", "size", "theme"}
+local valueField = "content"
+
 local Assets = setmetatable({}, {
 	__index = function(self, id)
-		return function(size)
-			return self:Content(id, size)
+		return function(...)
+			return self:Content(id, ...)
 		end
 	end,
 })
@@ -27,12 +30,18 @@ function Assets:Preload()
 	end)
 end
 
-function Assets:Content(id, size)
-	local content = assets[id]
-	if type(content) == "table" then
-		return content[size]
-	elseif type(content) == "string" then
-		return content
+function Assets:Content(...)
+	for _, asset in pairs(assets) do
+		local okay = true
+		for i, field in pairs(keyFields) do
+			if asset[field] ~= select(i, ...) then
+				okay = false
+				break
+			end
+		end
+		if okay then
+			return asset[valueField]
+		end
 	end
 	return nil
 end
