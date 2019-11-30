@@ -322,7 +322,9 @@ function Widget:Init()
 		if HotSwap:Active() then
 			item.RemoveButton.Icon.ImageTransparency = 0.8
 			item.RemoveButton.AutoButtonColor = false
-			itemData.label.status = "pending"
+			if HotSwap:Enabled() then
+				itemData.label.status = "pending"
+			end
 		else
 			item.RemoveButton.MouseButton1Click:Connect(function()
 				HotSwap:RemovePlugin(plugin)
@@ -349,14 +351,16 @@ function Widget:Init()
 		count = count - 1
 		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+PAD)*count-PAD)
 	end)
-	HotSwap.PluginStatus:Connect(function(plugin, okay, message)
-		local itemData = items[plugin]
-		if itemData == nil then
-			return
-		end
-		itemData.label.status = okay and "okay" or "error"
-		UpdateTheme(Studio.Theme, itemData.label)
-	end)
+	if HotSwap:Active() and HotSwap:Enabled() then
+		HotSwap.PluginStatus:Connect(function(plugin, okay, message)
+			local itemData = items[plugin]
+			if itemData == nil then
+				return
+			end
+			itemData.label.status = okay and "okay" or "error"
+			UpdateTheme(Studio.Theme, itemData.label)
+		end)
+	end
 
 	local function updateVisible()
 		toolbarButton:SetActive(panel.Enabled)
