@@ -17,7 +17,8 @@ return {
 	},
 	GUI = {
 		Size = 20,
-		Padding = 4,
+		Spacing = 4,
+		Padding = 2,
 		ScrollWidth = 16,
 	},
 	-- ReservedPlugins determines the number of reserved Plugin objects. Studio

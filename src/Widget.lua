@@ -129,6 +129,7 @@ do
 	end
 
 	local SIZE = Const.GUI.Size
+	local SPACE = Const.GUI.Spacing
 	local PAD = Const.GUI.Padding
 	local SCROLL = Const.GUI.ScrollWidth
 
@@ -139,19 +140,19 @@ do
 	buttonIcon.Name = "Icon"
 	buttonIcon.BackgroundTransparency = 1
 	buttonIcon.BorderSizePixel = 0
-	buttonIcon.Position = UDim2.new(0,2,0,2)
-	buttonIcon.Size = UDim2.new(1,-4,1,-4)
+	buttonIcon.Position = UDim2.new(0,PAD,0,PAD)
+	buttonIcon.Size = UDim2.new(1,-PAD*2,1,-PAD*2)
 
 	listItemTmpl = Instance.new("Frame")
 	listItemTmpl.Name = "ListItem"
 	listItemTmpl.BackgroundTransparency = 1
 	listItemTmpl.BorderSizePixel = 0
-	listItemTmpl.Size = UDim2.new(1,-PAD,0,SIZE)
+	listItemTmpl.Size = UDim2.new(1,-SPACE,0,SIZE)
 	local listItemLabel = Instance.new("Frame", listItemTmpl)
 	listItemLabel.Name = "Label"
 	listItemLabel.BorderMode = Enum.BorderMode.Inset
 	listItemLabel.Position = UDim2.new(0,0,0,0)
-	listItemLabel.Size = UDim2.new(1,-SIZE-PAD,1,0)
+	listItemLabel.Size = UDim2.new(1,-SIZE-SPACE,1,0)
 	local listItemText = Instance.new("TextLabel", listItemLabel)
 	listItemText.Name = "Text"
 	listItemText.BackgroundTransparency = 1
@@ -160,8 +161,8 @@ do
 	listItemText.TextSize = 14
 	listItemText.TextXAlignment = Enum.TextXAlignment.Left
 	listItemText.TextTruncate = Enum.TextTruncate.AtEnd
-	listItemText.Position = UDim2.new(0,2,0,0)
-	listItemText.Size = UDim2.new(1,-4,1,0)
+	listItemText.Position = UDim2.new(0,PAD,0,0)
+	listItemText.Size = UDim2.new(1,-PAD*2,1,0)
 	local removeButton = buttonTmpl:Clone()
 	removeButton.Name = "RemoveButton"
 	removeButton.Position = UDim2.new(1,-SIZE,0,0)
@@ -178,8 +179,8 @@ do
 	pluginList = Instance.new("ScrollingFrame", rootContainer)
 	pluginList.Name = "PluginList"
 	pluginList.BorderSizePixel = 0
-	pluginList.Position = UDim2.new(0,PAD,0,SIZE+PAD*3)
-	pluginList.Size = UDim2.new(1,-PAD*2,1,-SIZE*2-PAD*6)
+	pluginList.Position = UDim2.new(0,SPACE,0,SIZE+SPACE*3)
+	pluginList.Size = UDim2.new(1,-SPACE*2,1,-SIZE*2-SPACE*6)
 	pluginList.CanvasSize = UDim2.new(0,0,0,0)
 	pluginList.ScrollBarThickness = SCROLL
 	pluginList.VerticalScrollBarInset = Enum.ScrollBarInset.Always
@@ -195,11 +196,11 @@ do
 	listItemContainer.Size = UDim2.new(1,0,1,0)
 	table.insert(elements, {type="background",body=listItemContainer})
 	local listLayout = Instance.new("UIListLayout", listItemContainer)
-	listLayout.Padding = UDim.new(0,PAD)
+	listLayout.Padding = UDim.new(0,SPACE)
 
 	buttons.enable = buttonTmpl:Clone()
 	buttons.enable.Name = "EnableButton"
-	buttons.enable.Position = UDim2.new(0,PAD,0,PAD)
+	buttons.enable.Position = UDim2.new(0,SPACE,0,SPACE)
 	buttons.enable.Icon.Image = Assets.Enabled(32)
 	if HotSwap:Active() then
 		buttons.enable.Icon.ImageTransparency = 0.8
@@ -210,7 +211,7 @@ do
 
 	buttons.changelog = buttonTmpl:Clone()
 	buttons.changelog.Name = "ChangelogButton"
-	buttons.changelog.Position = UDim2.new(1,-SIZE*2-PAD*2,0,PAD)
+	buttons.changelog.Position = UDim2.new(1,-SIZE*2-SPACE*2,0,SPACE)
 	buttons.changelog.Icon.Image = Assets.Changelog(32, "Light")
 	buttons.changelog.Parent = rootContainer
 	table.insert(elements, {type="button",body=buttons.changelog,icon={
@@ -220,14 +221,14 @@ do
 
 	buttons.help = buttonTmpl:Clone()
 	buttons.help.Name = "HelpButton"
-	buttons.help.Position = UDim2.new(1,-SIZE-PAD,0,PAD)
+	buttons.help.Position = UDim2.new(1,-SIZE-SPACE,0,SPACE)
 	buttons.help.Icon.Image = Assets.Help(32)
 	buttons.help.Parent = rootContainer
 	table.insert(elements, {type="button",body=buttons.help})
 
 	buttons.add = buttonTmpl:Clone()
 	buttons.add.Name = "AddButton"
-	buttons.add.Position = UDim2.new(0,PAD,1,-SIZE-PAD)
+	buttons.add.Position = UDim2.new(0,SPACE,1,-SIZE-SPACE)
 	buttons.add.Icon.Image = Assets.Add(32)
 	if HotSwap:Active() then
 		buttons.add.Icon.ImageTransparency = 0.8
@@ -238,7 +239,7 @@ do
 
 	buttons.removeAll = buttonTmpl:Clone()
 	buttons.removeAll.Name = "RemoveAllButton"
-	buttons.removeAll.Position = UDim2.new(1,-SIZE-PAD-SCROLL,1,-SIZE-PAD)
+	buttons.removeAll.Position = UDim2.new(1,-SIZE-SPACE-SCROLL,1,-SIZE-SPACE)
 	buttons.removeAll.Icon.Image = Assets.RemoveAll(32, "Light")
 	if HotSwap:Active() then
 		buttons.removeAll.Icon.ImageTransparency = 0.8
@@ -301,7 +302,7 @@ function Widget:Init()
 	end
 
 	local SIZE = Const.GUI.Size
-	local PAD = Const.GUI.Padding
+	local SPACE = Const.GUI.Spacing
 	local items = {}
 	local count = 0
 	HotSwap.PluginAdded:Connect(function(plugin)
@@ -336,7 +337,7 @@ function Widget:Init()
 		UpdateTheme(Studio.Theme)
 
 		count = count + 1
-		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+PAD)*count-PAD)
+		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+SPACE)*count-SPACE)
 	end)
 	HotSwap.PluginRemoved:Connect(function(plugin)
 		local itemData = items[plugin]
@@ -349,7 +350,7 @@ function Widget:Init()
 		elements:Remove(itemData.body.RemoveButton)
 		itemData.body:Destroy()
 		count = count - 1
-		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+PAD)*count-PAD)
+		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+SPACE)*count-SPACE)
 	end)
 	if HotSwap:Active() and HotSwap:Enabled() then
 		HotSwap.PluginStatus:Connect(function(plugin, okay, message)
