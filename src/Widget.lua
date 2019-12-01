@@ -4,6 +4,7 @@ local Const = require(plugin.Const)
 local Assets = require(plugin.Assets)
 local Lion = require(plugin.Lion)
 local Path = require(plugin.Path)
+local Tooltip = require(plugin.Tooltip)
 
 local toolbar = plugin:CreateToolbar("HotSwap")
 local toolbarButton = toolbar:CreateButton(
@@ -76,11 +77,11 @@ function elements:Remove(body)
 	end
 end
 
-
 local buttons = {}
 local pluginList
 local listItemContainer
 local listItemTmpl
+local messageLabel
 local UpdateTheme
 do
 	local Color = Enum.StudioStyleGuideColor
@@ -101,21 +102,23 @@ do
 			elseif element.type == "scroll" then
 				element.body.BackgroundColor3 = theme:GetColor(Color.ScrollBarBackground, Mod.Default)
 				element.body.ScrollBarImageColor3 = theme:GetColor(Color.ScrollBar, Mod.Default)
-			elseif element.type == "label" then
+			elseif element.type == "field" then
 				element.body.BorderColor3 = theme:GetColor(Color.InputFieldBorder, Mod.Default)
 				if element.status == "pending" then
 					element.body.BackgroundColor3 = theme:GetColor(Color.DiffTextNoChangeBackground, Mod.Default)
 					element.body.Text.TextColor3 = theme:GetColor(Color.DiffTextNoChange, Mod.Default)
-				elseif element.status == "error" then
+				elseif element.status == "failed" then
 					element.body.BackgroundColor3 = theme:GetColor(Color.DiffTextDeletionBackground, Mod.Default)
 					element.body.Text.TextColor3 = theme:GetColor(Color.DiffTextDeletion, Mod.Default)
-				elseif element.status == "okay" then
+				elseif element.status == "running" then
 					element.body.BackgroundColor3 = theme:GetColor(Color.DiffTextAdditionBackground, Mod.Default)
 					element.body.Text.TextColor3 = theme:GetColor(Color.DiffTextAddition, Mod.Default)
 				else
 					element.body.BackgroundColor3 = theme:GetColor(Color.InputFieldBackground, Mod.Default)
 					element.body.Text.TextColor3 = theme:GetColor(Color.DimmedText, Mod.Default)
 				end
+			elseif element.type == "label" then
+				element.body.TextColor3 = theme:GetColor(Color.MainText, Mod.Default)
 			end
 		end
 	end
@@ -207,6 +210,7 @@ do
 		buttons.enable.AutoButtonColor = false
 	end
 	buttons.enable.Parent = rootContainer
+	Tooltip:Set(buttons.enable, Lion.Button_ToggleEnabled_Tooltip())
 	table.insert(elements, {type="button",body=buttons.enable})
 
 	buttons.changelog = buttonTmpl:Clone()
@@ -214,6 +218,7 @@ do
 	buttons.changelog.Position = UDim2.new(1,-SIZE*2-SPACE*2,0,SPACE)
 	buttons.changelog.Icon.Image = Assets.Changelog(32, "Light")
 	buttons.changelog.Parent = rootContainer
+	Tooltip:Set(buttons.changelog, Lion.Button_Changelog_Tooltip())
 	table.insert(elements, {type="button",body=buttons.changelog,icon={
 		Light = Assets.Changelog(32, "Light"),
 		Dark = Assets.Changelog(32, "Dark"),
@@ -224,6 +229,7 @@ do
 	buttons.help.Position = UDim2.new(1,-SIZE-SPACE,0,SPACE)
 	buttons.help.Icon.Image = Assets.Help(32)
 	buttons.help.Parent = rootContainer
+	Tooltip:Set(buttons.help, Lion.Button_Help_Tooltip())
 	table.insert(elements, {type="button",body=buttons.help})
 
 	buttons.add = buttonTmpl:Clone()
@@ -235,6 +241,7 @@ do
 		buttons.add.AutoButtonColor = false
 	end
 	buttons.add.Parent = rootContainer
+	Tooltip:Set(buttons.add, Lion.Button_Add_Tooltip())
 	table.insert(elements, {type="button",body=buttons.add})
 
 	buttons.removeAll = buttonTmpl:Clone()
@@ -246,10 +253,26 @@ do
 		buttons.removeAll.AutoButtonColor = false
 	end
 	buttons.removeAll.Parent = rootContainer
+	Tooltip:Set(buttons.removeAll, Lion.Button_RemoveAll_Tooltip())
 	table.insert(elements, {type="button",body=buttons.removeAll,icon={
 		Light = Assets.RemoveAll(32, "Light"),
 		Dark = Assets.RemoveAll(32, "Dark"),
 	}})
+
+	messageLabel = Instance.new("TextLabel")
+	messageLabel.Name = "Message"
+	messageLabel.BackgroundTransparency = 1
+	messageLabel.BorderSizePixel = 0
+	messageLabel.Text = ""
+	messageLabel.Font = Enum.Font.SourceSans
+	messageLabel.TextSize = 14
+	messageLabel.TextXAlignment = Enum.TextXAlignment.Left
+	messageLabel.TextYAlignment = Enum.TextYAlignment.Center
+	messageLabel.TextTruncate = Enum.TextTruncate.AtEnd
+	messageLabel.Position = UDim2.new(0,SIZE+SPACE*2+PAD,1,-SIZE-SPACE)
+	messageLabel.Size = UDim2.new(1,-SIZE*2-SPACE*4-PAD*2-SCROLL,0,SIZE)
+	messageLabel.Parent = rootContainer
+	table.insert(elements, {type="label",body=messageLabel})
 end
 
 local Widget = {}
@@ -257,6 +280,10 @@ local Widget = {}
 function Widget:Init()
 	local Selection = game:GetService("Selection")
 	local Studio = settings().Studio
+
+	Tooltip:Callback(function(message)
+		messageLabel.Text = message
+	end)
 
 	local function togglePanel()
 		panel.Enabled = not panel.Enabled
@@ -313,7 +340,7 @@ function Widget:Init()
 		local item = listItemTmpl:Clone()
 		local itemData = {
 			body = item,
-			label = {type="label",body=item.Label},
+			label = {type="field",body=item.Label},
 		}
 		items[plugin] = itemData
 		local text = item.Label.Text
@@ -325,6 +352,7 @@ function Widget:Init()
 			item.RemoveButton.AutoButtonColor = false
 			if HotSwap:Enabled() then
 				itemData.label.status = "pending"
+				Tooltip:Set(itemData.label.body, Lion.Label_Status_Pending_Tooltip())
 			end
 		else
 			item.RemoveButton.MouseButton1Click:Connect(function()
@@ -332,6 +360,7 @@ function Widget:Init()
 			end)
 		end
 		item.Parent = listItemContainer
+		Tooltip:Set(item.RemoveButton, Lion.Button_Remove_Tooltip())
 		table.insert(elements, itemData.label)
 		table.insert(elements, {type="button",body=item.RemoveButton})
 		UpdateTheme(Studio.Theme)
@@ -346,6 +375,8 @@ function Widget:Init()
 		end
 		items[plugin] = nil
 		Path:Remove(plugin)
+		Tooltip:Set(itemData.body.Label)
+		Tooltip:Set(itemData.body.RemoveButton)
 		elements:Remove(itemData.body.Label)
 		elements:Remove(itemData.body.RemoveButton)
 		itemData.body:Destroy()
@@ -358,7 +389,13 @@ function Widget:Init()
 			if itemData == nil then
 				return
 			end
-			itemData.label.status = okay and "okay" or "error"
+			if okay then
+				itemData.label.status = "running"
+				Tooltip:Set(itemData.label.body, Lion.Label_Status_Running_Tooltip())
+			else
+				itemData.label.status = "failed"
+				Tooltip:Set(itemData.label.body, Lion.Label_Status_Failed_Tooltip({message}))
+			end
 			UpdateTheme(Studio.Theme, itemData.label)
 		end)
 	end

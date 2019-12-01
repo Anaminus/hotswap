@@ -68,7 +68,7 @@ function HotSwap:runPlugin(realPlugin)
 	for _, descendant in pairs(realPlugin:GetDescendants()) do
 		if self:IsUnsafe(descendant) or Const.Debug and descendant.Name == "DEBUG_UNSAFE" then
 			-- Disallow plugins that contain unsafe objects.
-			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Unsafe)
+			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Unsafe())
 			return
 		end
 	end
@@ -88,7 +88,7 @@ function HotSwap:runPlugin(realPlugin)
 		end)
 		if not ok or not workingChild or Const.Debug and realChild.Name == "DEBUG_UNCLONABLE" then
 			-- Disallow plugins that contain unclonable objects.
-			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Unclonable)
+			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Unclonable())
 			return
 		end
 		workingChildren[i] = workingChild
@@ -98,7 +98,7 @@ function HotSwap:runPlugin(realPlugin)
 	if reservedPlugins then
 		workingPlugin = table.remove(reservedPlugins)
 		if workingPlugin == nil then
-			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Reserve_Limit)
+			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Reserve_Limit({Const.ReservedPlugins}))
 			return
 		end
 	else

@@ -19,6 +19,7 @@ rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/C
 rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Assets.lua"}}
 rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Lion.lua"}}
 rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Path.lua"}}
+rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Tooltip.lua"}}
 rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Widget.lua"}}
 
 rbxmk.map{rbxmk.output{targetInput,"Assets"},rbxmk.input{format="modulescript.lua","assets/data.lua"}}
