@@ -297,6 +297,7 @@ do
 end
 
 local helpCloseButton
+local helpScroll
 do
 	local SIZE = Const.GUI.Normal.Size
 	local SPACE = Const.GUI.Normal.Spacing
@@ -324,28 +325,28 @@ do
 	helpContainer.Size = UDim2.new(1,0,1,0)
 	table.insert(elements, {type="background",body=helpContainer})
 
-	local scrollingContainer = Instance.new("ScrollingFrame", helpContainer)
-	scrollingContainer.Name = "ScrollingContainer"
-	scrollingContainer.BorderSizePixel = 0
-	scrollingContainer.Position = UDim2.new(0,SIZE,0,SIZE)
-	scrollingContainer.Size = UDim2.new(1,-SIZE*2,1,-SIZE*3-SPACE)
-	scrollingContainer.CanvasSize = UDim2.new(0,0,0,0)
-	scrollingContainer.ScrollBarThickness = SCROLL
-	scrollingContainer.VerticalScrollBarInset = Enum.ScrollBarInset.Always
-	scrollingContainer.ScrollingDirection = Enum.ScrollingDirection.Y
-	scrollingContainer.TopImage = Assets.ScrollTop(32)
-	scrollingContainer.MidImage = Assets.ScrollMiddle(32)
-	scrollingContainer.BottomImage = Assets.ScrollBottom(32)
-	table.insert(elements, {type="scroll",body=scrollingContainer})
+	helpScroll = Instance.new("ScrollingFrame", helpContainer)
+	helpScroll.Name = "helpScroll"
+	helpScroll.BorderSizePixel = 0
+	helpScroll.Position = UDim2.new(0,SIZE,0,SIZE)
+	helpScroll.Size = UDim2.new(1,-SIZE*2,1,-SIZE*3-SPACE)
+	helpScroll.CanvasSize = UDim2.new(0,0,0,0)
+	helpScroll.ScrollBarThickness = SCROLL
+	helpScroll.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+	helpScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+	helpScroll.TopImage = Assets.ScrollTop(32)
+	helpScroll.MidImage = Assets.ScrollMiddle(32)
+	helpScroll.BottomImage = Assets.ScrollBottom(32)
+	table.insert(elements, {type="scroll",body=helpScroll})
 
-	local background = Instance.new("Frame", scrollingContainer)
+	local background = Instance.new("Frame", helpScroll)
 	background.Name = "Background"
 	background.BorderSizePixel = 0
 	background.Position = UDim2.new(0,0,0,0)
 	background.Size = UDim2.new(1,0,1,0)
 	table.insert(elements, {type="background",body=background})
 
-	local helpLabel = Instance.new("TextLabel", scrollingContainer)
+	local helpLabel = Instance.new("TextLabel", helpScroll)
 	helpLabel.Name = "Content"
 	helpLabel.BackgroundTransparency = 1
 	helpLabel.BorderSizePixel = 0
@@ -376,7 +377,7 @@ do
 			helpLabel.Font,
 			Vector2.new(helpLabel.AbsoluteSize.X, math.huge)
 		)
-		scrollingContainer.CanvasSize = UDim2.new(0,0,0,size.Y+PAD*2)
+		helpScroll.CanvasSize = UDim2.new(0,0,0,size.Y+PAD*2)
 		helpLabel.Size = UDim2.new(1,-PAD*2,0,size.Y+PAD*2)
 	end
 	helpPanel:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateSize)
@@ -422,10 +423,12 @@ function Widget:Init()
 		print("TODO:CHANGELOG")
 	end)
 	buttons.help.MouseButton1Click:Connect(function()
+		helpScroll.CanvasPosition = Vector2.new()
 		helpPanel.Enabled = not helpPanel.Enabled
 	end)
 	helpCloseButton.MouseButton1Click:Connect(function()
 		helpPanel.Enabled = false
+		helpScroll.CanvasPosition = Vector2.new()
 	end)
 
 	if not HotSwap:Active() then
