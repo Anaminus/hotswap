@@ -38,5 +38,5 @@ return {
 	-- limiting the number of runnable plugins. If ReservedPlugins is nil or 0,
 	-- then no Plugins are reserved, and instead are created as needed.
 	ReservedPlugins = 4,
-	Debug = true,
+	Debug = false,
 }
