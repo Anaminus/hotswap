@@ -67,6 +67,21 @@ local panel = plugin:CreateDockWidgetPluginGui(
 panel.Name = Const.ID.Panel
 panel.Title = Lion.Panel_Title()
 
+local helpPanel = plugin:CreateDockWidgetPluginGui(
+	Const.ID.HelpPanel,
+	DockWidgetPluginGuiInfo.new(
+		Enum.InitialDockState.Float, -- initDockState
+		false,                       -- initEnabled
+		true,                        -- overrideEnabledRestore
+		600,                         -- floatXSize
+		600,                         -- floatYSize
+		400,                         -- minWidth
+		300                          -- minHeight
+	)
+)
+helpPanel.Name = Const.ID.HelpPanel
+helpPanel.Title = Lion.HelpPanel_Title()
+
 local elements = {}
 function elements:Remove(body)
 	for i,v in pairs(self) do
@@ -77,11 +92,6 @@ function elements:Remove(body)
 	end
 end
 
-local buttons = {}
-local pluginList
-local listItemContainer
-local listItemTmpl
-local messageLabel
 local UpdateTheme
 do
 	local Color = Enum.StudioStyleGuideColor
@@ -99,6 +109,9 @@ do
 						element.body.Icon.Image = icon
 					end
 				end
+			elseif element.type == "textbutton" then
+				element.body.BackgroundColor3 = theme:GetColor(Color.Button, Mod.Default)
+				element.body.Text.TextColor3 = theme:GetColor(Color.MainText, Mod.Default)
 			elseif element.type == "scroll" then
 				element.body.BackgroundColor3 = theme:GetColor(Color.ScrollBarBackground, Mod.Default)
 				element.body.ScrollBarImageColor3 = theme:GetColor(Color.ScrollBar, Mod.Default)
@@ -130,10 +143,18 @@ do
 			updateElement(theme, element)
 		end
 	end
+end
 
-	local SIZE = Const.GUI.Size
-	local SPACE = Const.GUI.Spacing
-	local PAD = Const.GUI.Padding
+local buttons = {}
+local pluginList
+local listItemContainer
+local listItemTmpl
+local messageLabel
+do
+	local SIZE = Const.GUI.Compact.Size
+	local SPACE = Const.GUI.Compact.Spacing
+	local PAD = Const.GUI.Compact.Padding
+	local TEXTSIZE = Const.GUI.Compact.TextSize
 	local SCROLL = Const.GUI.ScrollWidth
 
 	local buttonTmpl = Instance.new("ImageButton")
@@ -161,7 +182,7 @@ do
 	listItemText.BackgroundTransparency = 1
 	listItemText.BorderSizePixel = 0
 	listItemText.Font = Enum.Font.SourceSans
-	listItemText.TextSize = 14
+	listItemText.TextSize = TEXTSIZE
 	listItemText.TextXAlignment = Enum.TextXAlignment.Left
 	listItemText.TextTruncate = Enum.TextTruncate.AtEnd
 	listItemText.Position = UDim2.new(0,PAD,0,0)
@@ -265,7 +286,7 @@ do
 	messageLabel.BorderSizePixel = 0
 	messageLabel.Text = ""
 	messageLabel.Font = Enum.Font.SourceSans
-	messageLabel.TextSize = 14
+	messageLabel.TextSize = TEXTSIZE
 	messageLabel.TextXAlignment = Enum.TextXAlignment.Left
 	messageLabel.TextYAlignment = Enum.TextYAlignment.Center
 	messageLabel.TextTruncate = Enum.TextTruncate.AtEnd
@@ -273,6 +294,93 @@ do
 	messageLabel.Size = UDim2.new(1,-SIZE*2-SPACE*4-PAD*2-SCROLL,0,SIZE)
 	messageLabel.Parent = rootContainer
 	table.insert(elements, {type="label",body=messageLabel})
+end
+
+local helpCloseButton
+do
+	local SIZE = Const.GUI.Normal.Size
+	local SPACE = Const.GUI.Normal.Spacing
+	local PAD = Const.GUI.Normal.Padding
+	local TEXTSIZE = Const.GUI.Normal.TextSize
+	local SCROLL = Const.GUI.ScrollWidth
+
+	local buttonTextTmpl = Instance.new("ImageButton")
+	buttonTextTmpl.BorderSizePixel = 0
+	buttonTextTmpl.Size = UDim2.new(0,SIZE,0,SIZE)
+	local buttonText = Instance.new("TextLabel", buttonTextTmpl)
+	buttonText.Name = "Text"
+	buttonText.BackgroundTransparency = 1
+	buttonText.BorderSizePixel = 0
+	buttonText.Text = "Button"
+	buttonText.Font = Enum.Font.SourceSans
+	buttonText.TextSize = TEXTSIZE
+	buttonText.Position = UDim2.new(0,PAD,0,PAD)
+	buttonText.Size = UDim2.new(1,-PAD*2,1,-PAD*2)
+
+	local helpContainer = Instance.new("Frame", helpPanel)
+	helpContainer.Name = "HelpContainer"
+	helpContainer.BorderSizePixel = 0
+	helpContainer.Position = UDim2.new(0,0,0,0)
+	helpContainer.Size = UDim2.new(1,0,1,0)
+	table.insert(elements, {type="background",body=helpContainer})
+
+	local scrollingContainer = Instance.new("ScrollingFrame", helpContainer)
+	scrollingContainer.Name = "ScrollingContainer"
+	scrollingContainer.BorderSizePixel = 0
+	scrollingContainer.Position = UDim2.new(0,SIZE,0,SIZE)
+	scrollingContainer.Size = UDim2.new(1,-SIZE*2,1,-SIZE*3-SPACE)
+	scrollingContainer.CanvasSize = UDim2.new(0,0,0,0)
+	scrollingContainer.ScrollBarThickness = SCROLL
+	scrollingContainer.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+	scrollingContainer.ScrollingDirection = Enum.ScrollingDirection.Y
+	scrollingContainer.TopImage = Assets.ScrollTop(32)
+	scrollingContainer.MidImage = Assets.ScrollMiddle(32)
+	scrollingContainer.BottomImage = Assets.ScrollBottom(32)
+	table.insert(elements, {type="scroll",body=scrollingContainer})
+
+	local background = Instance.new("Frame", scrollingContainer)
+	background.Name = "Background"
+	background.BorderSizePixel = 0
+	background.Position = UDim2.new(0,0,0,0)
+	background.Size = UDim2.new(1,0,1,0)
+	table.insert(elements, {type="background",body=background})
+
+	local helpLabel = Instance.new("TextLabel", scrollingContainer)
+	helpLabel.Name = "Content"
+	helpLabel.BackgroundTransparency = 1
+	helpLabel.BorderSizePixel = 0
+	helpLabel.Font = Enum.Font.SourceSans
+	helpLabel.TextSize = TEXTSIZE
+	helpLabel.TextWrapped = true
+	helpLabel.TextXAlignment = Enum.TextXAlignment.Left
+	helpLabel.TextYAlignment = Enum.TextYAlignment.Top
+	helpLabel.Position = UDim2.new(0,PAD,0,PAD)
+	helpLabel.Size = UDim2.new(1,-PAD*2,1,-PAD*2)
+	table.insert(elements, {type="label",body=helpLabel})
+
+	helpCloseButton = buttonTextTmpl:Clone()
+	helpCloseButton.Name = "CloseButton"
+	helpCloseButton.Text.Text = "Close"
+	helpCloseButton.Position = UDim2.new(1,-SIZE*4-SIZE,1,-SIZE*2)
+	helpCloseButton.Size = UDim2.new(0,SIZE*4,0,SIZE)
+	helpCloseButton.Parent = helpContainer
+	table.insert(elements, {type="textbutton",body=helpCloseButton})
+
+	local helpText = Lion.HelpPanel_Content()
+	helpLabel.Text = helpText:gsub("([^\n])\n([^\n])","%1 %2"):gsub("^%s*",""):gsub("%s*$","")
+	local TextService = game:GetService("TextService")
+	local function updateSize()
+		local size = TextService:GetTextSize(
+			helpLabel.Text,
+			helpLabel.TextSize,
+			helpLabel.Font,
+			Vector2.new(helpLabel.AbsoluteSize.X, math.huge)
+		)
+		scrollingContainer.CanvasSize = UDim2.new(0,0,0,size.Y+PAD*2)
+		helpLabel.Size = UDim2.new(1,-PAD*2,0,size.Y+PAD*2)
+	end
+	helpPanel:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateSize)
+	updateSize()
 end
 
 local Widget = {}
@@ -314,7 +422,10 @@ function Widget:Init()
 		print("TODO:CHANGELOG")
 	end)
 	buttons.help.MouseButton1Click:Connect(function()
-		print("TODO:HELP")
+		helpPanel.Enabled = not helpPanel.Enabled
+	end)
+	helpCloseButton.MouseButton1Click:Connect(function()
+		helpPanel.Enabled = false
 	end)
 
 	if not HotSwap:Active() then
@@ -328,8 +439,8 @@ function Widget:Init()
 		buttons.removeAll.MouseButton1Click:Connect(removeAll)
 	end
 
-	local SIZE = Const.GUI.Size
-	local SPACE = Const.GUI.Spacing
+	local SIZE = Const.GUI.Compact.Size
+	local SPACE = Const.GUI.Compact.Spacing
 	local items = {}
 	local count = 0
 	HotSwap.PluginAdded:Connect(function(plugin)
@@ -353,6 +464,8 @@ function Widget:Init()
 			if HotSwap:Enabled() then
 				itemData.label.status = "pending"
 				Tooltip:Set(itemData.label.body, Lion.Label_Status_Pending_Tooltip())
+			else
+				Tooltip:Set(itemData.label.body, Lion.Label_Status_Disabled_Tooltip())
 			end
 		else
 			item.RemoveButton.MouseButton1Click:Connect(function()
@@ -384,6 +497,8 @@ function Widget:Init()
 		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+SPACE)*count-SPACE)
 	end)
 	if HotSwap:Active() and HotSwap:Enabled() then
+		local running = 0
+		panel.Title = Lion.Panel_Title_Status({running})
 		HotSwap.PluginStatus:Connect(function(plugin, okay, message)
 			local itemData = items[plugin]
 			if itemData == nil then
@@ -392,6 +507,8 @@ function Widget:Init()
 			if okay then
 				itemData.label.status = "running"
 				Tooltip:Set(itemData.label.body, Lion.Label_Status_Running_Tooltip())
+				running = running + 1
+				panel.Title = Lion.Panel_Title_Status({running})
 			else
 				itemData.label.status = "failed"
 				Tooltip:Set(itemData.label.body, Lion.Label_Status_Failed_Tooltip({message}))

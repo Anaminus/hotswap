@@ -4,16 +4,6 @@ local Lion = require(plugin.Lion)
 
 local CollectionService = game:GetService("CollectionService")
 
--- A plugin consists of an instance tree, where the root is a Plugin object.
--- When marking a selection as a plugin, each object is treated as the root of a
--- plugin tree. That is, when HotSwap is active, each object is virtually
--- transformed into a Plugin object, and, like plugins, all descendant Scripts
--- are run.
-
--- HotSwap is active only when enabled, and when Studio's run mode is active.
--- Run mode is required so that hotswapped plugins that are no longer needed can
--- be properly cleaned up.
-
 local enabled = plugin:GetSetting(Const.Setting.Enabled)
 local HotSwap = {
 	monitorConn = nil,

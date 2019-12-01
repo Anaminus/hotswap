@@ -9,16 +9,26 @@ return {
 		ActionAdd           = "HotSwap_Action_Add",
 		ActionRemove        = "HotSwap_Action_Remove",
 		ActionRemoveAll     = "HotSwap_Action_RemoveAll",
-		Panel               = "HotSwap_Panel"
+		Panel               = "HotSwap_Panel",
+		HelpPanel           = "HotSwap_Help_Panel",
 	},
 	-- Setting contains identifiers for plugin settings.
 	Setting = {
 		Enabled = "HotSwap_Enabled",
 	},
 	GUI = {
-		Size = 20,
-		Spacing = 4,
-		Padding = 2,
+		Normal = {
+			Size = 32,
+			Spacing = 16,
+			TextSize = 20,
+			Padding = 4,
+		},
+		Compact = {
+			Size = 20,
+			Spacing = 4,
+			TextSize = 14,
+			Padding = 2,
+		},
 		ScrollWidth = 16,
 	},
 	-- ReservedPlugins determines the number of reserved Plugin objects. Studio
