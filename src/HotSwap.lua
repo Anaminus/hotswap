@@ -94,7 +94,7 @@ function HotSwap:runPlugin(realPlugin)
 	else
 		workingPlugin = PluginManager():CreatePlugin()
 	end
-	workingPlugin.Name = "Plugin_" .. realPlugin:GetFullName()
+	workingPlugin.Name = "Plugin_" .. realPlugin.Name
 	for _, workingChild in pairs(workingChildren) do
 		workingChild.Parent = workingPlugin
 	end
