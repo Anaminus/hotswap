@@ -66,22 +66,31 @@ function HotSwap:runPlugin(realPlugin)
 	-- Create a standalone copy of the plugin tree for use by running scripts. A
 	-- running thread can't tell the difference between the real and working
 	-- copies.
-	local workingChildren = realPlugin:GetChildren()
-	for i, realChild in pairs(workingChildren) do
-		local archivable = realChild.Archivable
-		local ok, workingChild = pcall(function()
-			realChild.Archivable = true
-			local copy = realChild:Clone()
-			realChild.Archivable = archivable
-			copy.Archivable = archivable
-			return copy
-		end)
-		if not ok or not workingChild or Const.Debug and realChild.Name == "DEBUG_UNCLONABLE" then
-			-- Disallow plugins that contain unclonable objects.
-			self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Unclonable())
-			return
+	local workingChildren
+	if realPlugin:IsA("Script") then
+		local archivable = realPlugin.Archivable
+		realPlugin.Archivable = true
+		workingChildren = realPlugin:Clone()
+		realPlugin.Archivable = archivable
+		workingChildren.Archivable = archivable
+	else
+		workingChildren = realPlugin:GetChildren()
+		for i, realChild in pairs(workingChildren) do
+			local archivable = realChild.Archivable
+			local ok, workingChild = pcall(function()
+				realChild.Archivable = true
+				local copy = realChild:Clone()
+				realChild.Archivable = archivable
+				copy.Archivable = archivable
+				return copy
+			end)
+			if not ok or not workingChild or Const.Debug and realChild.Name == "DEBUG_UNCLONABLE" then
+				-- Disallow plugins that contain unclonable objects.
+				self.pluginStatus:Fire(realPlugin, false, Lion.Error_Plugin_Unclonable())
+				return
+			end
+			workingChildren[i] = workingChild
 		end
-		workingChildren[i] = workingChild
 	end
 
 	local workingPlugin
@@ -95,8 +104,13 @@ function HotSwap:runPlugin(realPlugin)
 		workingPlugin = PluginManager():CreatePlugin()
 	end
 	workingPlugin.Name = "Plugin_" .. realPlugin.Name
-	for _, workingChild in pairs(workingChildren) do
-		workingChild.Parent = workingPlugin
+	if type(workingChildren) == "table" then
+		for _, workingChild in pairs(workingChildren) do
+			workingChild.Parent = workingPlugin
+		end
+	elseif typeof(workingChildren) == "Instance" then
+		-- Allow a marked script to run by making it a child of the plugin.
+		workingChildren.Parent = workingPlugin
 	end
 
 	-- Create a copy of the plugin tree containing the actual running scripts.
