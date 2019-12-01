@@ -52,6 +52,6 @@ return {
 	Panel_Title                    = "HotSwap",
 	Panel_Title_Status             = "Running {1:int} plugins - HotSwap",
 	Toolbar_Name                   = "HotSwap",
-	Toolbar_TogglePanel_Text       = "Panel",
+	Toolbar_TogglePanel_Text       = "Toggle Panel",
 	Toolbar_TogglePanel_Tooltip    = "Toggle the visibility of the HotSwap panel.",
 }
