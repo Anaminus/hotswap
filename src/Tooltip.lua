@@ -10,6 +10,7 @@ local Tooltip = {
 	frames = {},
 	func = nil,
 	inside = 0,
+	current = nil,
 }
 
 function Tooltip:Callback(func)
@@ -25,9 +26,11 @@ function Tooltip:update(state, frame)
 		local data = self.frames[frame]
 		if data then
 			self.func(data.message)
+			self.current = frame
 		end
 	elseif state < 0 and self.inside == 0 then
 		self.func("")
+		self.current = nil
 	end
 end
 
@@ -37,6 +40,13 @@ function Tooltip:Set(frame, message)
 		self.frames[frame] = nil
 		disconnect(data, "enterConn")
 		disconnect(data, "leaveConn")
+		if self.current == frame then
+			self.inside = self.inside - 1
+			self.current = nil
+			if self.func then
+				self.func("")
+			end
+		end
 		return
 	end
 	if data then
