@@ -12,15 +12,14 @@ Each running script has a 'script' and 'plugin' variable, pointing to the
 current script and the current plugin, respectively. Note that all objects under
 a running plugin are isolated copies that exist outside the game tree.
 
-The HotSwap panel list all marked objects in the current place. When active, the
-current status of each plugin is displayed. A plugin can fail to run for several
-reasons. For example, when the plugin contains unsafe objects that throw errors
-when accessed, or the plugin contains descendants that cannot be copied, such as
-services.
+The HotSwap panel lists all marked objects in the current place. When active,
+the current status of each plugin is displayed. A plugin can fail to run for
+several reasons, such as when the plugin contains unsafe objects that throw
+errors when accessed, or when a descendant cannot be copied.
 
 HotSwap runs plugins only when enabled, and when Studio's run mode is active.
-Run mode is required so that running plugins that are no longer needed can be
-properly cleaned up.
+Run mode is required so that running plugins can be properly cleaned up when
+they are no longer needed.
 ]]
 
 return {
