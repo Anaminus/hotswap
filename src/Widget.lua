@@ -234,16 +234,16 @@ do
 	Tooltip:Set(buttons.enable, Lion.Button_ToggleEnabled_Tooltip())
 	table.insert(elements, {type="button",body=buttons.enable})
 
-	buttons.changelog = buttonTmpl:Clone()
-	buttons.changelog.Name = "ChangelogButton"
-	buttons.changelog.Position = UDim2.new(1,-SIZE*2-SPACE*2,0,SPACE)
-	buttons.changelog.Icon.Image = Assets.Changelog(32, "Light")
-	buttons.changelog.Parent = rootContainer
-	Tooltip:Set(buttons.changelog, Lion.Button_Changelog_Tooltip())
-	table.insert(elements, {type="button",body=buttons.changelog,icon={
-		Light = Assets.Changelog(32, "Light"),
-		Dark = Assets.Changelog(32, "Dark"),
-	}})
+	-- buttons.changelog = buttonTmpl:Clone()
+	-- buttons.changelog.Name = "ChangelogButton"
+	-- buttons.changelog.Position = UDim2.new(1,-SIZE*2-SPACE*2,0,SPACE)
+	-- buttons.changelog.Icon.Image = Assets.Changelog(32, "Light")
+	-- buttons.changelog.Parent = rootContainer
+	-- Tooltip:Set(buttons.changelog, Lion.Button_Changelog_Tooltip())
+	-- table.insert(elements, {type="button",body=buttons.changelog,icon={
+	-- 	Light = Assets.Changelog(32, "Light"),
+	-- 	Dark = Assets.Changelog(32, "Dark"),
+	-- }})
 
 	buttons.help = buttonTmpl:Clone()
 	buttons.help.Name = "HelpButton"
@@ -419,9 +419,9 @@ function Widget:Init()
 
 	actions.TogglePanel.Triggered:Connect(togglePanel)
 
-	buttons.changelog.MouseButton1Click:Connect(function()
-		print("TODO:CHANGELOG")
-	end)
+	-- buttons.changelog.MouseButton1Click:Connect(function()
+	-- 	print("TODO:CHANGELOG")
+	-- end)
 	buttons.help.MouseButton1Click:Connect(function()
 		helpScroll.CanvasPosition = Vector2.new()
 		helpPanel.Enabled = not helpPanel.Enabled
