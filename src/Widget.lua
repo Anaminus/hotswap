@@ -19,35 +19,35 @@ local actions = {
 		Const.ID.ActionTogglePanel,
 		Lion.Action_TogglePanel_Text(),
 		Lion.Action_TogglePanel_StatusTip(),
-		Assets.Logo(16),
+		Assets.Logo(32),
 		true
 	),
 	ToggleEnabled = plugin:CreatePluginAction(
 		Const.ID.ActionToggleEnabled,
 		Lion.Action_ToggleEnabled_Text(),
 		Lion.Action_ToggleEnabled_StatusTip(),
-		Assets.Enabled(16),
+		Assets.Enabled(32),
 		true
 	),
 	Add = plugin:CreatePluginAction(
 		Const.ID.ActionAdd,
 		Lion.Action_Add_Text(),
 		Lion.Action_Add_StatusTip(),
-		Assets.Add(16),
+		Assets.Add(32),
 		true
 	),
 	Remove = plugin:CreatePluginAction(
 		Const.ID.ActionRemove,
 		Lion.Action_Remove_Text(),
 		Lion.Action_Remove_StatusTip(),
-		Assets.Remove(16),
+		Assets.Remove(32),
 		true
 	),
 	RemoveAll = plugin:CreatePluginAction(
 		Const.ID.ActionRemoveAll,
 		Lion.Action_RemoveAll_Text(),
 		Lion.Action_RemoveAll_StatusTip(),
-		Assets.RemoveAll(16, "Light"),
+		Assets.RemoveAll(32, "Light"),
 		true
 	),
 }
