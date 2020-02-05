@@ -446,7 +446,7 @@ function Widget:Init()
 	local SPACE = Const.GUI.Compact.Spacing
 	local items = {}
 	local count = 0
-	HotSwap.PluginAdded:Connect(function(plugin)
+	local function addPlugin(plugin)
 		if items[plugin] ~= nil then
 			return
 		end
@@ -483,7 +483,11 @@ function Widget:Init()
 
 		count = count + 1
 		pluginList.CanvasSize = UDim2.new(0,0,0,(SIZE+SPACE)*count-SPACE)
-	end)
+	end
+	HotSwap.PluginAdded:Connect(addPlugin)
+	for _, plugin in pairs(HotSwap:ListPlugins()) do
+		addPlugin(plugin)
+	end
 	HotSwap.PluginRemoved:Connect(function(plugin)
 		local itemData = items[plugin]
 		if itemData == nil then
