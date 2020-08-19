@@ -1,30 +1,29 @@
 local targetPath = (...) or "HotSwap.rbxm"
 print("Building", targetPath)
-local targetInput = rbxmk.input{"generate://Instance"}
+
+local plugin = DataModel.new()
 
 local function addDirectory(dir, target)
-	for _, file in pairs(rbxmk.readdir{dir}) do
-		rbxmk.map{
-			rbxmk.output{targetInput,target},
-			rbxmk.input{format="modulescript.lua",
-				rbxmk.path{dir, file.name},
-			},
-		}
+	local folder = Instance.new("Folder")
+	folder.Name = target
+	folder.Parent = plugin
+	for _, f in ipairs(os.dir(dir)) do
+		local script = file.read(os.join(dir, f.Name), "modulescript.lua")
+		script.Parent = folder
 	end
 end
 
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="script.lua","src/Main.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/HotSwap.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Const.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Assets.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Lion.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Path.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Tooltip.lua"}}
-rbxmk.map{rbxmk.output{targetInput},rbxmk.input{format="modulescript.lua","src/Widget.lua"}}
-
-rbxmk.map{rbxmk.output{targetInput,"Assets"},rbxmk.input{format="modulescript.lua","assets/data.lua"}}
+file.read("src/Main.lua", "script.lua").Parent = plugin
+file.read("src/HotSwap.lua").Parent = plugin
+file.read("src/Const.lua").Parent = plugin
+local assets = file.read("src/Assets.lua")
+assets.Parent = plugin
+file.read("assets/data.lua").Parent = assets
+file.read("src/Lion.lua").Parent = plugin
+file.read("src/Path.lua").Parent = plugin
+file.read("src/Tooltip.lua").Parent = plugin
+file.read("src/Widget.lua").Parent = plugin
 
 addDirectory("l10n", "Lion")
 
-rbxmk.delete{rbxmk.output{targetPath}}
-rbxmk.map{targetInput, rbxmk.output{targetPath}}
+file.write(targetPath, plugin, "rbxm")
