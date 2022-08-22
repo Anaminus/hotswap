@@ -151,7 +151,7 @@ function HotSwap:runPlugin(realPlugin)
 			-- so that things like `getfenv(1).script` return the correct value.
 			-- Start actual source on same line so that line numbers are
 			-- correct.
-			virtualScript.Source = "return function(s,p)script,plugin,s,p=s,p,nil,nil;" .. workingScript.Source .. "\nend"
+			virtualScript.Source = "return function(s,p)script,plugin=s,p;s,p=nil,nil;" .. workingScript.Source .. "\nend"
 			virtualScript.Parent = virtualParent
 
 			table.insert(virtualScripts, {
