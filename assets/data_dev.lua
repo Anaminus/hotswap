@@ -1,0 +1,15 @@
+return {
+	{id="Add"          , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_add_32.png"},
+--	{id="Changelog"    , size=32 , theme="Dark"  , content="rbxasset://hotswap/hotswap_changelog_dark_32.png"},
+--	{id="Changelog"    , size=32 , theme="Light" , content="rbxasset://hotswap/hotswap_changelog_light_32.png"},
+	{id="Disabled"     , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_disabled_32.png"},
+	{id="Enabled"      , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_enabled_32.png"},
+	{id="Help"         , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_help_32.png"},
+	{id="Logo"         , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_logo_32.png"},
+	{id="Remove"       , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_remove_32.png"},
+	{id="RemoveAll"    , size=32 , theme="Dark"  , content="rbxasset://hotswap/hotswap_removeall_dark_32.png"},
+	{id="RemoveAll"    , size=32 , theme="Light" , content="rbxasset://hotswap/hotswap_removeall_light_32.png"},
+	{id="ScrollBottom" , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_scroll_bottom_32.png"},
+	{id="ScrollMiddle" , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_scroll_middle_32.png"},
+	{id="ScrollTop"    , size=32 , theme=nil     , content="rbxasset://hotswap/hotswap_scroll_top_32.png"},
+}
